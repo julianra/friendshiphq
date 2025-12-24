@@ -1,0 +1,193 @@
+/* ======================================================
+   Global reset & base
+====================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background: #0f172a;
+  color: #e5e7eb;
+  line-height: 1.6;
+}
+
+/* ======================================================
+   Landing / Hero
+====================================================== */
+.hero {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  max-width: 500px;
+  opacity: 0.85;
+  margin-bottom: 2rem;
+}
+
+/* ======================================================
+   Buttons
+====================================================== */
+.primary {
+  background: #6366f1;
+  border: none;
+  color: white;
+  padding: 0.9rem 1.6rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.primary:hover {
+  background: #4f46e5;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #6366f1;
+  color: #6366f1;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.secondary:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.full {
+  width: 100%;
+  margin-bottom: 0.7rem;
+}
+
+/* ======================================================
+   Content sections
+====================================================== */
+.content {
+  max-width: 700px;
+  margin: auto;
+  padding: 2rem;
+}
+
+section {
+  margin-bottom: 2.5rem;
+}
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  opacity: 0.6;
+}
+
+/* ======================================================
+   Modal (login)
+====================================================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #020617;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 0.7rem;
+  margin-bottom: 0.7rem;
+  border-radius: 6px;
+  border: none;
+}
+
+/* ======================================================
+   Dashboard
+====================================================== */
+.dashboard {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.muted {
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+.card {
+  background: #020617;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card.highlight {
+  border: 1px solid #6366f1;
+}
+
+.big {
+  font-size: 1.4rem;
+  margin: 0.5rem 0;
+}
+
+/* ======================================================
+   Logout (subtiel)
+====================================================== */
+.logout {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.logout:hover {
+  color: #e5e7eb;
+}
+.activity-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.activity-row button {
+  margin-left: 1rem;
+}

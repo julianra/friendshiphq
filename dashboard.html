@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friendship HQ – Overzicht</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="dashboard">
+
+    <header class="dashboard-header">
+      <div>
+        <h2 id="welcomeText">Welkom</h2>
+        <p class="muted">Overzicht Friendship HQ</p>
+      </div>
+
+      <button id="logoutBtn" class="logout">
+        Uitloggen
+      </button>
+    </header>
+
+    <section class="card">
+      <h3>Huidige status</h3>
+      <p class="big">Stemronde actief</p>
+      <p class="muted">
+        Breng je stem uit en zie meteen het resultaat.
+      </p>
+    </section>
+
+    <section class="card">
+  <h3>Live stemmen</h3>
+  <div id="votesOverview" class="votes-overview">
+    <p class="muted">Stemmen worden geladen…</p>
+  </div>
+</section>
+
+<section class="card highlight">
+  <h3>Huidige winnaar</h3>
+  <p id="winnerName" class="big">—</p>
+  <p id="winnerVotes" class="muted">Nog geen stemmen</p>
+</section>
+
+
+    <a href="vote.html" class="primary full">
+  Naar stemmen
+</a>
+
+
+  </div>
+
+  <script type="module" src="dashboard.js"></script>
+
+</body>
+</html>

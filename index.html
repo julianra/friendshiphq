@@ -15,8 +15,33 @@
     </p>
 
     <button id="loginBtn" class="primary">
-      Aanmelden
+  Aanmelden
+</button>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Aanmelden</h2>
+
+    <button id="googleLogin" class="primary full">
+      Aanmelden met Google
     </button>
+
+    <hr />
+
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Wachtwoord" />
+
+    <button id="emailLogin" class="primary full">
+      Aanmelden met email
+    </button>
+
+    <button id="closeModal" class="secondary">
+      Sluiten
+    </button>
+  </div>
+</div>
+
   </header>
 
   <main class="content">
@@ -43,6 +68,6 @@
     <p>© Friendship HQ</p>
   </footer>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

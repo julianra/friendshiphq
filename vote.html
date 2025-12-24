@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friendship HQ – Stemmen</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="dashboard">
+
+    <header class="dashboard-header">
+      <div>
+        <h2>Stem op een activiteit</h2>
+        <p class="muted">Realtime stemmen</p>
+      </div>
+
+      <a href="dashboard.html" class="logout">Terug</a>
+    </header>
+
+    <section class="card">
+      <h3>Activiteiten</h3>
+      <div id="activities"></div>
+    </section>
+
+    <section class="card highlight">
+      <h3>Nieuwe activiteit toevoegen</h3>
+      <input id="newActivity" placeholder="Naam activiteit" />
+      <button id="addActivityBtn" class="primary full">
+        Toevoegen
+      </button>
+    </section>
+
+  </div>
+
+  <script type="module" src="vote.js"></script>
+</body>
+</html>
