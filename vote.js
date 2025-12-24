@@ -1,5 +1,5 @@
 // ======================================================
-// Friendship HQ – Realtime stemmen (1 stem per gebruiker)
+// Friendship HQ – Realtime stemmen (wijzigbaar, correct)
 // ======================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
@@ -13,12 +13,8 @@ import {
   ref,
   push,
   onValue,
-  update,
-  increment,
-  set,
-  get
+  runTransaction
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
-import { runTransaction } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 // ------------------------------------------------------
 // Firebase config
@@ -37,25 +33,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
+// ------------------------------------------------------
+// State
+// ------------------------------------------------------
 let currentUser = null;
-let userVoteActivityId = null;
-
-// ------------------------------------------------------
-// Auth check + load user vote
-// ------------------------------------------------------
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  currentUser = user;
-
-  const voteSnap = await get(ref(db, `votes/${user.uid}`));
-  if (voteSnap.exists()) {
-    userVoteActivityId = voteSnap.val().activityId;
-  }
-});
+let currentVoteActivityId = null;
 
 // ------------------------------------------------------
 // UI refs
@@ -63,6 +45,26 @@ onAuthStateChanged(auth, async (user) => {
 const activitiesDiv = document.getElementById("activities");
 const newActivityInput = document.getElementById("newActivity");
 const addActivityBtn = document.getElementById("addActivityBtn");
+
+// ------------------------------------------------------
+// Auth + user vote listener
+// ------------------------------------------------------
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  currentUser = user;
+
+  // 🔑 SINGLE SOURCE OF TRUTH
+  const userVoteRef = ref(db, `votes/${user.uid}`);
+  onValue(userVoteRef, (snapshot) => {
+    currentVoteActivityId = snapshot.exists()
+      ? snapshot.val().activityId
+      : null;
+  });
+});
 
 // ------------------------------------------------------
 // Realtime activiteiten
@@ -76,53 +78,60 @@ onValue(activitiesRef, (snapshot) => {
   if (!data) return;
 
   Object.entries(data).forEach(([id, activity]) => {
+    const isMine = currentVoteActivityId === id;
+
     const row = document.createElement("div");
     row.className = "activity-row";
-
-    const alreadyVoted = userVoteActivityId !== null;
-    const isUserChoice = userVoteActivityId === id;
+    if (isMine) row.classList.add("mine");
 
     row.innerHTML = `
       <strong>${activity.name}</strong>
       <span>${activity.votes || 0} stemmen</span>
-      <button class="secondary" ${alreadyVoted ? "disabled" : ""}>
-        ${isUserChoice ? "Jouw stem" : "Stem"}
+      <button class="secondary">
+        ${isMine ? "Jouw stem" : "Stem"}
       </button>
     `;
 
     row.querySelector("button").onclick = async () => {
-  if (userVoteActivityId) return;
+      // 😄 zelfde stem → animatie
+      if (currentVoteActivityId === id) {
+        row.classList.remove("shake");
+        void row.offsetWidth;
+        row.classList.add("shake");
+        return;
+      }
 
-  const userVoteRef = ref(db, `votes/${currentUser.uid}`);
-  const activityRef = ref(db, `activities/${id}`);
+      const previousId = currentVoteActivityId;
 
-  // 1️⃣ probeer stem te registreren (wordt maar 1x toegestaan)
-  const voteResult = await runTransaction(userVoteRef, (current) => {
-    if (current === null) {
-      return {
-        activityId: id,
-        votedAt: Date.now()
-      };
-    }
-    return; // abort transaction
-  });
+      // 1️⃣ update stemrecord
+      await runTransaction(
+        ref(db, `votes/${currentUser.uid}`),
+        () => ({
+          activityId: id,
+          votedAt: Date.now()
+        })
+      );
 
-  if (!voteResult.committed) {
-    alert("Je hebt al gestemd.");
-    return;
-  }
+      // 2️⃣ nieuwe +1
+      await runTransaction(
+        ref(db, `activities/${id}`),
+        (a) => {
+          if (a) a.votes = (a.votes || 0) + 1;
+          return a;
+        }
+      );
 
-  // 2️⃣ verhoog teller PAS NA succesvolle stemregistratie
-  await runTransaction(activityRef, (activity) => {
-    if (activity) {
-      activity.votes = (activity.votes || 0) + 1;
-    }
-    return activity;
-  });
-
-  userVoteActivityId = id;
-};
-
+      // 3️⃣ oude -1
+      if (previousId) {
+        await runTransaction(
+          ref(db, `activities/${previousId}`),
+          (a) => {
+            if (a && a.votes > 0) a.votes -= 1;
+            return a;
+          }
+        );
+      }
+    };
 
     activitiesDiv.appendChild(row);
   });
@@ -135,7 +144,7 @@ addActivityBtn.onclick = async () => {
   const name = newActivityInput.value.trim();
   if (!name) return;
 
-  await push(activitiesRef, {
+  await push(ref(db, "activities"), {
     name,
     votes: 0,
     createdAt: Date.now()

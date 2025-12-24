@@ -8,62 +8,75 @@
 </head>
 <body>
 
-  <header class="hero">
-    <h1>Friendship HQ</h1>
-    <p class="subtitle">
-      Samen beslissen. Samen afspreken. Samen doen.
-    </p>
+  <!-- ================= HERO ================= -->
+  <header class="hero hero-animated">
+    <div class="hero-inner">
+      <h1 class="fade-up">Friendship HQ</h1>
 
-    <button id="loginBtn" class="primary">
-  Aanmelden
-</button>
+      <p class="subtitle fade-up delay-1">
+        Samen beslissen. Samen afspreken.<br />
+        <strong>Samen doen.</strong>
+      </p>
 
-<!-- LOGIN MODAL -->
-<div id="loginModal" class="modal hidden">
-  <div class="modal-content">
-    <h2>Aanmelden</h2>
+      <div class="hero-actions fade-up delay-2">
+        <button id="openLogin" class="primary full glow">
+          Aanmelden
+        </button>
+      </div>
 
-    <button id="googleLogin" class="primary full">
-      Aanmelden met Google
-    </button>
+    </div>
 
-    <hr />
-
-    <input id="email" type="email" placeholder="Email" />
-    <input id="password" type="password" placeholder="Wachtwoord" />
-
-    <button id="emailLogin" class="primary full">
-      Aanmelden met email
-    </button>
-
-    <button id="closeModal" class="secondary">
-      Sluiten
-    </button>
-  </div>
-</div>
-
+    <div class="hero-bg-orb"></div>
   </header>
 
-  <main class="content">
-    <section>
+  <!-- ================= LOGIN / REGISTER MODAL ================= -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content modal-animated">
+
+      <h2 id="modalTitle">Aanmelden</h2>
+
+      <input id="email" type="email" placeholder="Email" />
+      <input id="password" type="password" placeholder="Wachtwoord" />
+
+      <button id="emailLogin" class="primary full">
+        Aanmelden
+      </button>
+
+      <button id="emailRegister" class="secondary full">
+        Account aanmaken
+      </button>
+
+      <button id="closeModal" class="secondary">
+        Sluiten
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ================= CONTENT ================= -->
+  <main class="content content-soft">
+
+    <section class="info-card fade-up delay-4">
       <h2>Wat is Friendship HQ?</h2>
       <p>
-        Friendship HQ is een plek waar je samen met je groep beslist
-        welke activiteit jullie gaan doen. Iedereen stemt, en de
-        populairste activiteit wint.
+        Friendship HQ helpt je om samen met je groep eenvoudig te beslissen
+        wat jullie gaan doen. Iedereen stemt, en het resultaat is meteen
+        duidelijk.
       </p>
     </section>
 
-    <section>
+    <section class="info-card fade-up delay-5">
       <h2>Hoe werkt het?</h2>
       <ol>
         <li>Meld je aan</li>
         <li>Stem op een activiteit</li>
-        <li>Zie meteen wat de groep kiest</li>
+        <li>Zie live wat de groep kiest</li>
       </ol>
     </section>
+
   </main>
 
+  <!-- ================= FOOTER ================= -->
   <footer>
     <p>© Friendship HQ</p>
   </footer>

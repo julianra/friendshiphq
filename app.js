@@ -1,5 +1,5 @@
 // ======================================================
-// Friendship HQ – Firebase Auth (GitHub Pages compatible)
+// Friendship HQ – Firebase Auth (GitHub Pages)
 // ======================================================
 
 // Firebase core
@@ -12,11 +12,12 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 // ------------------------------------------------------
-// Firebase configuratie (DIT IS OK OM PUBLIEK TE STAAN)
+// Firebase configuratie
 // ------------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyDbShquCPLLzA-x1eDplFLjVxJKk_N2BFo",
@@ -35,70 +36,108 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 // ------------------------------------------------------
-// UI elementen
+// UI elementen (index.html)
 // ------------------------------------------------------
-const loginBtn = document.getElementById("loginBtn");
 const modal = document.getElementById("loginModal");
 const closeModal = document.getElementById("closeModal");
 
+const openLogin = document.getElementById("openLogin");
+const openRegister = document.getElementById("openRegister");
+const modalTitle = document.getElementById("modalTitle");
+
 const googleBtn = document.getElementById("googleLogin");
-const emailBtn = document.getElementById("emailLogin");
+const emailLoginBtn = document.getElementById("emailLogin");
+const emailRegisterBtn = document.getElementById("emailRegister");
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 
 // ------------------------------------------------------
-// Modal gedrag
+// Modal open/sluit
 // ------------------------------------------------------
-loginBtn.addEventListener("click", () => {
-  modal.classList.remove("hidden");
-});
+if (openLogin) {
+  openLogin.onclick = () => {
+    modalTitle.textContent = "Aanmelden";
+    modal.classList.remove("hidden");
+  };
+}
 
-closeModal.addEventListener("click", () => {
-  modal.classList.add("hidden");
-});
+if (openRegister) {
+  openRegister.onclick = () => {
+    modalTitle.textContent = "Registreren";
+    modal.classList.remove("hidden");
+  };
+}
+
+if (closeModal) {
+  closeModal.onclick = () => {
+    modal.classList.add("hidden");
+  };
+}
 
 // ------------------------------------------------------
-// Google login
+// Google login (login = registratie indien nodig)
 // ------------------------------------------------------
-googleBtn.addEventListener("click", async () => {
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (err) {
-    alert(err.message);
-  }
-});
-
-// ------------------------------------------------------
-// Email login / registratie
-// ------------------------------------------------------
-emailBtn.addEventListener("click", async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
-
-  if (!email || !password) {
-    alert("Vul email en wachtwoord in");
-    return;
-  }
-
-  try {
-    // Probeer eerst in te loggen
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (err) {
-    if (err.code === "auth/user-not-found") {
-      // Bestaat niet → maak account aan
-      await createUserWithEmailAndPassword(auth, email, password);
-    } else {
+if (googleBtn) {
+  googleBtn.onclick = async () => {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (err) {
       alert(err.message);
     }
-  }
-});
+  };
+}
 
 // ------------------------------------------------------
-// Auth state listener
+// Email login (GEEN auto-registratie)
 // ------------------------------------------------------
-import { signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+if (emailLoginBtn) {
+  emailLoginBtn.onclick = async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
+    if (!email || !password) {
+      alert("Vul email en wachtwoord in");
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch {
+      alert("Onjuist email of wachtwoord");
+    }
+  };
+}
+
+// ------------------------------------------------------
+// Email registratie (expliciet)
+// ------------------------------------------------------
+if (emailRegisterBtn) {
+  emailRegisterBtn.onclick = async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!email || !password) {
+      alert("Vul email en wachtwoord in");
+      return;
+    }
+
+    if (password.length < 6) {
+      alert("Wachtwoord moet minstens 6 tekens lang zijn");
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+}
+
+// ------------------------------------------------------
+// Auth state + redirects
+// ------------------------------------------------------
 const isDashboard = window.location.pathname.endsWith("dashboard.html");
 
 onAuthStateChanged(auth, (user) => {
@@ -119,11 +158,13 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// Logout
+// ------------------------------------------------------
+// Logout (dashboard)
+// ------------------------------------------------------
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
+  logoutBtn.onclick = async () => {
     await signOut(auth);
     window.location.href = "index.html";
-  });
+  };
 }

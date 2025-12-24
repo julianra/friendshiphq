@@ -191,3 +191,138 @@ footer {
 .activity-row button {
   margin-left: 1rem;
 }
+.activity-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  margin-bottom: 0.4rem;
+  transition: background 0.3s ease, transform 0.15s ease;
+}
+
+.activity-row.mine {
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+}
+
+.activity-row.shake {
+  animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+.activity-row button {
+  white-space: nowrap;
+}
+/* ================= HERO EN SFEER ================= */
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-animated {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg-orb {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(
+    circle,
+    rgba(99,102,241,0.25),
+    transparent 70%
+  );
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: orb-float 10s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes orb-float {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -52%) scale(1.05); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ================= ANIMATIES ================= */
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+.delay-4 { animation-delay: 0.6s; }
+.delay-5 { animation-delay: 0.75s; }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= BUTTON EFFECT ================= */
+
+.glow {
+  box-shadow: 0 0 0 rgba(99,102,241,0.6);
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%   { box-shadow: 0 0 0 rgba(99,102,241,0.4); }
+  50%  { box-shadow: 0 0 24px rgba(99,102,241,0.8); }
+  100% { box-shadow: 0 0 0 rgba(99,102,241,0.4); }
+}
+
+/* ================= CONTENT ================= */
+
+.content-soft {
+  margin-top: -4rem;
+}
+
+.info-card {
+  background: rgba(255,255,255,0.03);
+  border-radius: 14px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(6px);
+}
+
+.hero-hint {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* ================= MODAL ANIMATIE ================= */
+
+.modal-animated {
+  animation: modalPop 0.35s ease;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
