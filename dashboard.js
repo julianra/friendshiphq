@@ -98,3 +98,26 @@ onValue(activitiesRef, (snapshot) => {
     winnerVotes.textContent = `${topActivity.votes} stemmen`;
   }
 });
+const daysLeftEl = document.getElementById("daysLeft");
+
+if (daysLeftEl) {
+  const now = new Date();
+
+  const currentYear = now.getFullYear();
+
+  // Deadline: 15 januari
+  let deadline = new Date(currentYear, 0, 15);
+
+  // Als we NA 15 januari zitten, pak volgend jaar
+  if (now > deadline) {
+    deadline = new Date(currentYear + 1, 0, 15);
+  }
+
+  const diffMs = deadline - now;
+  const daysLeft = Math.max(
+    0,
+    Math.ceil(diffMs / (1000 * 60 * 60 * 24))
+  );
+
+  daysLeftEl.textContent = daysLeft;
+}

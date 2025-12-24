@@ -326,3 +326,9 @@ footer {
     transform: scale(1);
   }
 }
+.deadline-info {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #c7d2fe;
+  opacity: 0.9;
+}

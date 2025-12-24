@@ -84,15 +84,25 @@ onValue(activitiesRef, (snapshot) => {
     row.className = "activity-row";
     if (isMine) row.classList.add("mine");
 
-    row.innerHTML = `
-      <strong>${activity.name}</strong>
-      <span>${activity.votes || 0} stemmen</span>
-      <button class="secondary">
-        ${isMine ? "Jouw stem" : "Stem"}
-      </button>
-    `;
+    const votingOpen = isVotingOpen();
+
+row.innerHTML = `
+  <strong>${activity.name}</strong>
+  <span>${activity.votes || 0} stemmen</span>
+  <button class="secondary" ${!votingOpen ? "disabled" : ""}>
+    ${
+      !votingOpen
+        ? "Stemmen gesloten"
+        : isMine
+          ? "Jouw stem"
+          : "Stem"
+    }
+  </button>
+`;
 
     row.querySelector("button").onclick = async () => {
+  if (!isVotingOpen()) return;
+
       // 😄 zelfde stem → animatie
       if (currentVoteActivityId === id) {
         row.classList.remove("shake");
@@ -152,3 +162,24 @@ addActivityBtn.onclick = async () => {
 
   newActivityInput.value = "";
 };
+function isVotingOpen() {
+  const now = new Date();
+  const year = now.getFullYear();
+
+  // Deadline = 15 januari
+  let deadline = new Date(year, 0, 15, 23, 59, 59);
+
+  // Als we NA 15 januari zitten → volgende jaar nemen
+  if (now > deadline) {
+    deadline = new Date(year + 1, 0, 15, 23, 59, 59);
+  }
+
+  return now <= deadline;
+}
+const votingStatus = document.getElementById("votingStatus");
+
+if (votingStatus) {
+  votingStatus.textContent = isVotingOpen()
+    ? "Je kan stemmen tot en met 15 januari."
+    : "Stemmen zijn gesloten. De winnaar ligt vast.";
+}
