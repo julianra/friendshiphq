@@ -8,32 +8,74 @@
 </head>
 <body>
 
-  <!-- ================= HERO ================= -->
-  <header class="hero hero-animated">
-    <div class="hero-inner">
-      <h1 class="fade-up">Friendship HQ</h1>
+  <!-- ================= APP WRAPPER ================= -->
+  <div class="app">
 
-      <p class="subtitle fade-up delay-1">
-        Samen beslissen. Samen afspreken.<br />
-        <strong>Samen doen.</strong>
-      </p>
+    <!-- ================= HERO ================= -->
+    <header class="hero hero-animated">
+      <div class="hero-inner">
 
-      <div class="hero-actions fade-up delay-2">
-        <button id="openLogin" class="primary full glow">
-          Aanmelden
-        </button>
+        <h1 class="fade-up">Friendship HQ</h1>
+
+        <p class="subtitle fade-up delay-1">
+          Stop met eindeloze chats.<br />
+          <strong>Beslis samen. Automatisch.</strong>
+        </p>
+
+        <div class="hero-actions fade-up delay-2">
+          <button id="openLogin" class="primary glow">
+            Aanmelden
+          </button>
+        </div>
+
+        <div class="hero-features fade-up delay-3">
+          <span>🗳️ Live stemmen</span>
+          <span>⚖️ Eerlijke keuzes</span>
+          <span>📅 Minder gedoe</span>
+        </div>
+
       </div>
 
-    </div>
+      <div class="hero-bg-orb"></div>
+    </header>
 
-    <div class="hero-bg-orb"></div>
-  </header>
+    <!-- ================= INFO ================= -->
+    <main class="info">
 
-  <!-- ================= LOGIN / REGISTER MODAL ================= -->
+      <div class="info-card fade-up delay-4">
+        <h2>Waarom dit werkt</h2>
+        <p>
+          Iedereen krijgt inspraak.<br />
+          Geen chaos. Geen eindeloos overleg.
+        </p>
+      </div>
+
+      <div class="info-card fade-up delay-5">
+        <h2>Wat kan je doen?</h2>
+        <p>
+          Maak een groep, voeg activiteiten toe
+          en zie live wat gekozen wordt.
+        </p>
+      </div>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+      © Friendship HQ · Samen doen
+    </footer>
+
+  </div>
+
+  <!-- ================= LOGIN MODAL ================= -->
   <div id="loginModal" class="modal hidden">
     <div class="modal-content modal-animated">
 
       <h2 id="modalTitle">Aanmelden</h2>
+
+      <p class="modal-hint">
+        Nieuw hier? Maak in 10 seconden een account aan.
+      </p>
 
       <input id="email" type="email" placeholder="Email" />
       <input id="password" type="password" placeholder="Wachtwoord" />
@@ -52,34 +94,6 @@
 
     </div>
   </div>
-
-  <!-- ================= CONTENT ================= -->
-  <main class="content content-soft">
-
-    <section class="info-card fade-up delay-4">
-      <h2>Wat is Friendship HQ?</h2>
-      <p>
-        Friendship HQ helpt je om samen met je groep eenvoudig te beslissen
-        wat jullie gaan doen. Iedereen stemt, en het resultaat is meteen
-        duidelijk.
-      </p>
-    </section>
-
-    <section class="info-card fade-up delay-5">
-      <h2>Hoe werkt het?</h2>
-      <ol>
-        <li>Meld je aan</li>
-        <li>Stem op een activiteit</li>
-        <li>Zie live wat de groep kiest</li>
-      </ol>
-    </section>
-
-  </main>
-
-  <!-- ================= FOOTER ================= -->
-  <footer>
-    <p>© Friendship HQ</p>
-  </footer>
 
   <script type="module" src="app.js"></script>
 </body>

@@ -1,5 +1,5 @@
 /* ======================================================
-   Global reset & base
+   Reset & base
 ====================================================== */
 * {
   box-sizing: border-box;
@@ -11,31 +11,83 @@
 body {
   background: #0f172a;
   color: #e5e7eb;
-  line-height: 1.6;
+  overflow: hidden;
 }
 
 /* ======================================================
-   Landing / Hero
+   App layout (KEY PART)
+====================================================== */
+.app {
+  height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 1.5rem;
+}
+
+/* ======================================================
+   Hero
 ====================================================== */
 .hero {
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  position: relative;
   text-align: center;
-  padding: 2rem;
+  padding: 1.5rem 1rem;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
 }
 
 .hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  margin-bottom: 0.6rem;
 }
 
 .subtitle {
-  max-width: 500px;
   opacity: 0.85;
-  margin-bottom: 2rem;
+  margin-bottom: 1.2rem;
+}
+
+.hero-actions {
+  margin-bottom: 1rem;
+}
+
+.hero-features {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  font-size: 0.85rem;
+  opacity: 0.75;
+  flex-wrap: wrap;
+}
+
+/* ======================================================
+   Info section
+====================================================== */
+.info {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.info-card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  padding: 1.2rem;
+  width: 100%;
+  max-width: 280px;
+  max-height: 200px;
+  text-align: center;
+}
+
+/* ======================================================
+   Footer
+====================================================== */
+footer {
+  text-align: center;
+  font-size: 0.8rem;
+  opacity: 0.6;
 }
 
 /* ======================================================
@@ -45,7 +97,7 @@ body {
   background: #6366f1;
   border: none;
   color: white;
-  padding: 0.9rem 1.6rem;
+  padding: 0.8rem 1.4rem;
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -64,41 +116,18 @@ body {
   cursor: pointer;
 }
 
-.secondary:hover {
-  background: rgba(99, 102, 241, 0.1);
-}
-
 .full {
   width: 100%;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.6rem;
 }
 
 /* ======================================================
-   Content sections
-====================================================== */
-.content {
-  max-width: 700px;
-  margin: auto;
-  padding: 2rem;
-}
-
-section {
-  margin-bottom: 2.5rem;
-}
-
-footer {
-  text-align: center;
-  padding: 1.5rem;
-  opacity: 0.6;
-}
-
-/* ======================================================
-   Modal (login)
+   Modal
 ====================================================== */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0,0,0,0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -117,10 +146,6 @@ footer {
   text-align: center;
 }
 
-.modal-content h2 {
-  margin-bottom: 1rem;
-}
-
 .modal-content input {
   width: 100%;
   padding: 0.7rem;
@@ -129,114 +154,41 @@ footer {
   border: none;
 }
 
-/* ======================================================
-   Dashboard
-====================================================== */
-.dashboard {
-  max-width: 800px;
-  margin: auto;
-  padding: 2rem;
-}
-
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.muted {
-  opacity: 0.6;
-  font-size: 0.9rem;
-}
-
-.card {
-  background: #020617;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.card.highlight {
-  border: 1px solid #6366f1;
-}
-
-.big {
-  font-size: 1.4rem;
-  margin: 0.5rem 0;
+.modal-hint {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 1rem;
 }
 
 /* ======================================================
-   Logout (subtiel)
+   Animations
 ====================================================== */
-.logout {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  cursor: pointer;
-  font-size: 0.9rem;
+.fade-up {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 0.7s ease forwards;
 }
 
-.logout:hover {
-  color: #e5e7eb;
-}
-.activity-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.activity-row button {
-  margin-left: 1rem;
-}
-.activity-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.7rem 0.9rem;
-  border-radius: 8px;
-  margin-bottom: 0.4rem;
-  transition: background 0.3s ease, transform 0.15s ease;
-}
-
-.activity-row.mine {
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.4);
-}
-
-.activity-row.shake {
-  animation: shake 0.35s ease;
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  50% { transform: translateX(4px); }
-  75% { transform: translateX(-3px); }
-  100% { transform: translateX(0); }
-}
-
-.activity-row button {
-  white-space: nowrap;
-}
-/* ================= HERO EN SFEER ================= */
-
-.hero-inner {
-  position: relative;
-  z-index: 2;
-}
-
-.hero-animated {
-  position: relative;
-  overflow: hidden;
-}
-
+/* ======================================================
+   Orb background
+====================================================== */
 .hero-bg-orb {
   position: absolute;
-  width: 420px;
-  height: 420px;
+  width: 360px;
+  height: 360px;
   background: radial-gradient(
     circle,
     rgba(99,102,241,0.25),
@@ -246,89 +198,25 @@ footer {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: orb-float 10s ease-in-out infinite;
+  animation: orbFloat 10s ease-in-out infinite;
   z-index: 1;
 }
 
-@keyframes orb-float {
+@keyframes orbFloat {
   0% { transform: translate(-50%, -50%) scale(1); }
   50% { transform: translate(-50%, -52%) scale(1.05); }
   100% { transform: translate(-50%, -50%) scale(1); }
 }
 
-/* ================= ANIMATIES ================= */
-
-.fade-up {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.8s ease forwards;
-}
-
-.delay-1 { animation-delay: 0.15s; }
-.delay-2 { animation-delay: 0.3s; }
-.delay-3 { animation-delay: 0.45s; }
-.delay-4 { animation-delay: 0.6s; }
-.delay-5 { animation-delay: 0.75s; }
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ================= BUTTON EFFECT ================= */
-
+/* ======================================================
+   Button glow
+====================================================== */
 .glow {
-  box-shadow: 0 0 0 rgba(99,102,241,0.6);
   animation: glowPulse 2.5s ease-in-out infinite;
 }
 
 @keyframes glowPulse {
   0%   { box-shadow: 0 0 0 rgba(99,102,241,0.4); }
-  50%  { box-shadow: 0 0 24px rgba(99,102,241,0.8); }
+  50%  { box-shadow: 0 0 20px rgba(99,102,241,0.8); }
   100% { box-shadow: 0 0 0 rgba(99,102,241,0.4); }
-}
-
-/* ================= CONTENT ================= */
-
-.content-soft {
-  margin-top: -4rem;
-}
-
-.info-card {
-  background: rgba(255,255,255,0.03);
-  border-radius: 14px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  backdrop-filter: blur(6px);
-}
-
-.hero-hint {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-  opacity: 0.7;
-}
-
-/* ================= MODAL ANIMATIE ================= */
-
-.modal-animated {
-  animation: modalPop 0.35s ease;
-}
-
-@keyframes modalPop {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.deadline-info {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  color: #c7d2fe;
-  opacity: 0.9;
 }
