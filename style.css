@@ -405,3 +405,8 @@ select {
   background: rgba(99,102,241,0.2);
   font-weight: 600;
 }
+.voters {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}

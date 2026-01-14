@@ -1,5 +1,5 @@
 // ======================================================
-// Friendship HQ – Realtime stemmen (wijzigbaar, correct)
+// Friendship HQ – Realtime stemmen
 // ======================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
@@ -7,13 +7,13 @@ import {
   getAuth,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-
 import {
   getDatabase,
   ref,
   push,
   onValue,
-  runTransaction
+  runTransaction,
+  get
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 // ------------------------------------------------------
@@ -45,9 +45,10 @@ let currentVoteActivityId = null;
 const activitiesDiv = document.getElementById("activities");
 const newActivityInput = document.getElementById("newActivity");
 const addActivityBtn = document.getElementById("addActivityBtn");
+const votingStatus = document.getElementById("votingStatus");
 
 // ------------------------------------------------------
-// Auth + user vote listener
+// Auth + stem van gebruiker
 // ------------------------------------------------------
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -57,7 +58,6 @@ onAuthStateChanged(auth, (user) => {
 
   currentUser = user;
 
-  // 🔑 SINGLE SOURCE OF TRUTH
   const userVoteRef = ref(db, `votes/${user.uid}`);
   onValue(userVoteRef, (snapshot) => {
     currentVoteActivityId = snapshot.exists()
@@ -71,49 +71,45 @@ onAuthStateChanged(auth, (user) => {
 // ------------------------------------------------------
 const activitiesRef = ref(db, "activities");
 
-onValue(activitiesRef, (snapshot) => {
+onValue(activitiesRef, async (snapshot) => {
   activitiesDiv.innerHTML = "";
 
   const data = snapshot.val();
   if (!data) return;
 
-  Object.entries(data).forEach(([id, activity]) => {
+  for (const [id, activity] of Object.entries(data)) {
     const isMine = currentVoteActivityId === id;
+    const votingOpen = isVotingOpen();
 
     const row = document.createElement("div");
     row.className = "activity-row";
     if (isMine) row.classList.add("mine");
 
-    const votingOpen = isVotingOpen();
+    row.innerHTML = `
+      <strong>${activity.name}</strong>
+      <span>${activity.votes || 0} stemmen</span>
+      <button class="secondary" ${!votingOpen ? "disabled" : ""}>
+        ${
+          !votingOpen
+            ? "Stemmen gesloten"
+            : isMine
+              ? "Jouw stem"
+              : "Stem"
+        }
+      </button>
+    `;
 
-row.innerHTML = `
-  <strong>${activity.name}</strong>
-  <span>${activity.votes || 0} stemmen</span>
-  <button class="secondary" ${!votingOpen ? "disabled" : ""}>
-    ${
-      !votingOpen
-        ? "Stemmen gesloten"
-        : isMine
-          ? "Jouw stem"
-          : "Stem"
-    }
-  </button>
-`;
-
+    // -------------------------------
+    // STEMKNOP
+    // -------------------------------
     row.querySelector("button").onclick = async () => {
-  if (!isVotingOpen()) return;
+      if (!isVotingOpen()) return;
 
-      // 😄 zelfde stem → animatie
-      if (currentVoteActivityId === id) {
-        row.classList.remove("shake");
-        void row.offsetWidth;
-        row.classList.add("shake");
-        return;
-      }
+      if (currentVoteActivityId === id) return;
 
       const previousId = currentVoteActivityId;
 
-      // 1️⃣ update stemrecord
+      // 1️⃣ stem opslaan per user
       await runTransaction(
         ref(db, `votes/${currentUser.uid}`),
         () => ({
@@ -122,29 +118,58 @@ row.innerHTML = `
         })
       );
 
-      // 2️⃣ nieuwe +1
+      // 2️⃣ nieuwe activiteit +1 + voter
       await runTransaction(
         ref(db, `activities/${id}`),
         (a) => {
-          if (a) a.votes = (a.votes || 0) + 1;
+          if (!a) return a;
+          a.votes = (a.votes || 0) + 1;
+          if (!a.voters) a.voters = {};
+          a.voters[currentUser.uid] = true;
           return a;
         }
       );
 
-      // 3️⃣ oude -1
+      // 3️⃣ oude activiteit -1 + voter verwijderen
       if (previousId) {
         await runTransaction(
           ref(db, `activities/${previousId}`),
           (a) => {
-            if (a && a.votes > 0) a.votes -= 1;
+            if (!a) return a;
+            if (a.votes > 0) a.votes -= 1;
+            if (a.voters) delete a.voters[currentUser.uid];
             return a;
           }
         );
       }
     };
 
+    // -------------------------------
+    // 👥 STEMMERS TONEN (voornamen)
+    // -------------------------------
+    if (activity.voters) {
+      const names = [];
+
+      for (const uid of Object.keys(activity.voters)) {
+        const userSnap = await get(ref(db, `users/${uid}`));
+        if (!userSnap.exists()) continue;
+
+        const userData = userSnap.val();
+        if (userData.firstName && userData.firstName.trim() !== "") {
+          names.push(userData.firstName.trim());
+        }
+      }
+
+      if (names.length > 0) {
+        const votersEl = document.createElement("div");
+        votersEl.className = "voters";
+        votersEl.textContent = `Gestemd door: ${names.join(", ")}`;
+        row.appendChild(votersEl);
+      }
+    }
+
     activitiesDiv.appendChild(row);
-  });
+  }
 });
 
 // ------------------------------------------------------
@@ -162,22 +187,25 @@ addActivityBtn.onclick = async () => {
 
   newActivityInput.value = "";
 };
+
+// ------------------------------------------------------
+// Voting deadline
+// ------------------------------------------------------
 function isVotingOpen() {
   const now = new Date();
   const year = now.getFullYear();
 
-  // Deadline = 15 januari
   let deadline = new Date(year, 0, 15, 23, 59, 59);
-
-  // Als we NA 15 januari zitten → volgende jaar nemen
   if (now > deadline) {
     deadline = new Date(year + 1, 0, 15, 23, 59, 59);
   }
 
   return now <= deadline;
 }
-const votingStatus = document.getElementById("votingStatus");
 
+// ------------------------------------------------------
+// Status tekst
+// ------------------------------------------------------
 if (votingStatus) {
   votingStatus.textContent = isVotingOpen()
     ? "Je kan stemmen tot en met 15 januari."
