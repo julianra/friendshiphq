@@ -9,10 +9,12 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
+
 import {
   getDatabase,
   ref,
-  onValue
+  onValue,
+  get
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 // ------------------------------------------------------
@@ -35,15 +37,40 @@ const db = getDatabase(app);
 // ------------------------------------------------------
 // Auth check + logout
 // ------------------------------------------------------
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "index.html";
     return;
   }
 
+  const userRef = ref(db, `users/${user.uid}`);
+  const snapshot = await get(userRef);
+
+  // -------------------------------
+  // ❌ PROFIEL ONVOLLEDIG → NAAR SETTINGS
+  // -------------------------------
+  if (!snapshot.exists()) {
+    window.location.href = "settings.html";
+    return;
+  }
+
+  const data = snapshot.val();
+
+  const hasFirstName = data.firstName && data.firstName.trim() !== "";
+  const hasLastName = data.lastName && data.lastName.trim() !== "";
+  const hasZipcode = data.zipcode && data.zipcode.trim() !== "";
+
+  if (!hasFirstName || !hasLastName || !hasZipcode) {
+    window.location.href = "settings.html";
+    return;
+  }
+
+  // -------------------------------
+  // ✅ PROFIEL OK → DASHBOARD TOEGESTAAN
+  // -------------------------------
   const welcome = document.getElementById("welcomeText");
   if (welcome) {
-    welcome.textContent = `Welkom, ${user.displayName || user.email}`;
+    welcome.textContent = `Welkom, ${data.firstName}`;
   }
 });
 
@@ -72,32 +99,49 @@ onValue(activitiesRef, (snapshot) => {
     return;
   }
 
-  let topActivity = null;
+  // Zet data om naar array
+  const activities = Object.values(data).map(activity => ({
+    name: activity.name,
+    votes: activity.votes || 0
+  }));
 
-  Object.values(data).forEach((activity) => {
-    const votes = activity.votes || 0;
+  // Sorteer op stemmen (hoog → laag)
+  activities.sort((a, b) => b.votes - a.votes);
 
+  // -------------------------------
+  // 🔒 LIVE STEMMEN: MAX 4
+  // -------------------------------
+  const topFour = activities.slice(0, 4);
+
+  topFour.forEach((activity, index) => {
     const row = document.createElement("div");
     row.className = "vote-row";
+
+    // Optioneel: highlight leider
+    if (index === 0) {
+      row.classList.add("leading-vote");
+    }
+
     row.innerHTML = `
       <span>${activity.name}</span>
-      <strong>${votes}</strong>
+      <strong>${activity.votes}</strong>
     `;
     overviewDiv.appendChild(row);
-
-    if (!topActivity || votes > topActivity.votes) {
-      topActivity = {
-        name: activity.name,
-        votes
-      };
-    }
   });
 
-  if (topActivity) {
-    winnerName.textContent = topActivity.name;
-    winnerVotes.textContent = `${topActivity.votes} stemmen`;
+  // -------------------------------
+  // 🏆 WINNAAR
+  // -------------------------------
+  const winner = activities[0];
+  if (winner) {
+    winnerName.textContent = winner.name;
+    winnerVotes.textContent = `${winner.votes} stemmen`;
+  } else {
+    winnerName.textContent = "—";
+    winnerVotes.textContent = "Nog geen stemmen";
   }
 });
+
 const daysLeftEl = document.getElementById("daysLeft");
 
 if (daysLeftEl) {
@@ -120,4 +164,11 @@ if (daysLeftEl) {
   );
 
   daysLeftEl.textContent = daysLeft;
+}
+const settingsBtn = document.getElementById("settingsBtn");
+
+if (settingsBtn) {
+  settingsBtn.onclick = () => {
+    window.location.href = "settings.html";
+  };
 }

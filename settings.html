@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friendship HQ – Instellingen</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="dashboard">
+
+    <header class="dashboard-header">
+      <div>
+        <h2>Instellingen</h2>
+        <p class="muted">Persoonlijke voorkeuren</p>
+      </div>
+
+      <a href="dashboard.html" class="logout">Terug</a>
+    </header>
+
+    <!-- ================= PROFIEL ================= -->
+    <section class="card">
+        <p class="muted">
+  Vul je profiel volledig in om Friendship HQ te gebruiken.
+</p>
+
+  <h3>Profiel</h3>
+
+  <label class="field">
+    <span>Voornaam</span>
+    <input id="firstNameInput" placeholder="Voornaam" />
+  </label>
+
+  <label class="field">
+    <span>Achternaam</span>
+    <input id="lastNameInput" placeholder="Achternaam" />
+  </label>
+
+  <label class="field">
+    <span>Postcode</span>
+    <input id="zipcodeInput" placeholder="bv. 2500" />
+  </label>
+</section>
+
+    <!-- ================= FUNNY SETTING ================= -->
+    <section class="card highlight">
+  <h3>Kies je avatar</h3>
+  <p class="muted">Dit bepaalt hoe je zichtbaar bent in groepen</p>
+
+  <div id="avatarGrid" class="avatar-grid"></div>
+</section>
+
+
+    <button id="saveBtn" class="primary full">
+      Opslaan
+    </button>
+
+  </div>
+
+  <script type="module" src="settings.js"></script>
+</body>
+</html>

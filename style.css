@@ -1,5 +1,5 @@
 /* ======================================================
-   Reset & base
+   RESET & BASE
 ====================================================== */
 * {
   box-sizing: border-box;
@@ -11,22 +11,76 @@
 body {
   background: #0f172a;
   color: #e5e7eb;
-  overflow: hidden;
 }
 
 /* ======================================================
-   App layout (KEY PART)
+   TYPOGRAPHY HELPERS
+====================================================== */
+.big {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.muted {
+  opacity: 0.75;
+  font-size: 0.9rem;
+}
+
+/* ======================================================
+   BUTTONS
+====================================================== */
+.primary {
+  background: #6366f1;
+  border: none;
+  color: white;
+  padding: 0.8rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.primary:hover {
+  background: #4f46e5;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid #6366f1;
+  color: #6366f1;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.full {
+  width: 100%;
+  margin-bottom: 0.6rem;
+}
+
+.logout {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #e5e7eb;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logout:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ======================================================
+   LANDING PAGE (index.html)
 ====================================================== */
 .app {
-  height: 100svh;
+  min-height: 100svh;
   display: grid;
   grid-template-rows: auto 1fr auto;
   padding: 1.5rem;
 }
 
-/* ======================================================
-   Hero
-====================================================== */
 .hero {
   position: relative;
   text-align: center;
@@ -61,29 +115,45 @@ body {
   flex-wrap: wrap;
 }
 
-/* ======================================================
-   Info section
-====================================================== */
+/* Orb background */
+.hero-bg-orb {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(
+    circle,
+    rgba(99,102,241,0.25),
+    transparent 70%
+  );
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: orbFloat 10s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes orbFloat {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -52%) scale(1.05); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Info cards */
 .info {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  align-items: stretch;
 }
 
 .info-card {
   background: rgba(255,255,255,0.04);
   border-radius: 14px;
   padding: 1.2rem;
-  width: 100%;
   max-width: 280px;
-  max-height: 200px;
   text-align: center;
 }
 
-/* ======================================================
-   Footer
-====================================================== */
 footer {
   text-align: center;
   font-size: 0.8rem;
@@ -91,38 +161,137 @@ footer {
 }
 
 /* ======================================================
-   Buttons
+   DASHBOARD & VOTE SHARED LAYOUT
 ====================================================== */
-.primary {
-  background: #6366f1;
-  border: none;
-  color: white;
-  padding: 0.8rem 1.4rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
+.dashboard {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.primary:hover {
-  background: #4f46e5;
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.04);
+  padding: 1.2rem 1.4rem;
+  border-radius: 14px;
 }
-
-.secondary {
-  background: transparent;
-  border: 1px solid #6366f1;
-  color: #6366f1;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
+.leading-vote {
+  color: #a5b4fc;
+  font-weight: 600;
 }
-
-.full {
-  width: 100%;
-  margin-bottom: 0.6rem;
+/* ======================================================
+   Header actions
+====================================================== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 /* ======================================================
-   Modal
+   Icon button (gear)
+====================================================== */
+.icon-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #e5e7eb;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+
+/* ======================================================
+   CARDS
+====================================================== */
+.card {
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.card.highlight {
+  background: linear-gradient(
+    145deg,
+    rgba(99,102,241,0.18),
+    rgba(255,255,255,0.04)
+  );
+  border: 1px solid rgba(99,102,241,0.35);
+}
+
+/* ======================================================
+   DASHBOARD TOP CARDS
+====================================================== */
+.top-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem;
+}
+
+@media (max-width: 900px) {
+  .top-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ======================================================
+   LIVE VOTES
+====================================================== */
+.votes-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.vote-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.vote-row:last-child {
+  border-bottom: none;
+}
+
+/* ======================================================
+   WINNER CARD
+====================================================== */
+.winner-card {
+  margin-top: 1.4rem;
+}
+
+/* ======================================================
+   INPUTS (vote.html)
+====================================================== */
+input {
+  background: #020617;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #e5e7eb;
+  padding: 0.7rem;
+  border-radius: 6px;
+}
+
+/* ======================================================
+   MODAL (login)
 ====================================================== */
 .modal {
   position: fixed;
@@ -148,20 +317,11 @@ footer {
 
 .modal-content input {
   width: 100%;
-  padding: 0.7rem;
   margin-bottom: 0.7rem;
-  border-radius: 6px;
-  border: none;
-}
-
-.modal-hint {
-  font-size: 0.85rem;
-  opacity: 0.7;
-  margin-bottom: 1rem;
 }
 
 /* ======================================================
-   Animations
+   ANIMATIONS
 ====================================================== */
 .fade-up {
   opacity: 0;
@@ -182,35 +342,7 @@ footer {
   }
 }
 
-/* ======================================================
-   Orb background
-====================================================== */
-.hero-bg-orb {
-  position: absolute;
-  width: 360px;
-  height: 360px;
-  background: radial-gradient(
-    circle,
-    rgba(99,102,241,0.25),
-    transparent 70%
-  );
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: orbFloat 10s ease-in-out infinite;
-  z-index: 1;
-}
-
-@keyframes orbFloat {
-  0% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -52%) scale(1.05); }
-  100% { transform: translate(-50%, -50%) scale(1); }
-}
-
-/* ======================================================
-   Button glow
-====================================================== */
+/* Button glow */
 .glow {
   animation: glowPulse 2.5s ease-in-out infinite;
 }
@@ -219,4 +351,57 @@ footer {
   0%   { box-shadow: 0 0 0 rgba(99,102,241,0.4); }
   50%  { box-shadow: 0 0 20px rgba(99,102,241,0.8); }
   100% { box-shadow: 0 0 0 rgba(99,102,241,0.4); }
+}
+/* ======================================================
+   Form fields
+====================================================== */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.8rem;
+}
+
+.field span {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+select {
+  background: #020617;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #e5e7eb;
+  padding: 0.7rem;
+  border-radius: 6px;
+}
+/* ======================================================
+   Avatar grid
+====================================================== */
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.avatar-option {
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.avatar-option:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.avatar-option.selected {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.2);
+  font-weight: 600;
 }

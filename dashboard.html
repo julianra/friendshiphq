@@ -7,66 +7,65 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <main class="page">
+    <div class="dashboard">
 
-  <div class="dashboard">
-
-    <header class="dashboard-header">
-      <div>
-        <h2 id="welcomeText">Welkom</h2>
-        <p class="muted">Overzicht Friendship HQ</p>
-      </div>
-
-      <button id="logoutBtn" class="logout">
-        Uitloggen
-      </button>
-    </header>
-
-    <section class="card">
-      <h3>Huidige status</h3>
-      <p class="big">Stemronde actief</p>
-      <p class="muted">
-        Breng je stem uit en zie meteen het resultaat.
-      </p>
-    </section>
-<section class="card highlight">
-  <h3>Volgende activiteit</h3>
-
-  <p class="big">
-    📅 31 januari
-  </p>
-
-  <p class="muted">
-    Je kan stemmen tot <strong>15 januari</strong>.
-    Daarna wordt de winnende activiteit vastgelegd.
-  </p>
-
-  <div class="deadline-info">
-    ⏳ Stemmen sluit over <span id="daysLeft">—</span> dagen
+      <header class="dashboard-header">
+  <div>
+    <h2 id="welcomeText">Welkom</h2>
+    <p class="muted">Overzicht Friendship HQ</p>
   </div>
+
+  <div class="header-actions">
+    <button id="settingsBtn" class="icon-btn" title="Instellingen">
+      ⚙️
+    </button>
+
+    <button id="logoutBtn" class="logout">Uitloggen</button>
+  </div>
+</header>
+
+
+<section class="top-cards">
+  <section class="card">
+    <h3>Huidige status</h3>
+    <p class="big">Stemronde actief</p>
+    <p class="muted">
+      Breng je stem uit en zie meteen het resultaat.
+    </p>
+  </section>
+
+  <section class="card highlight">
+    <h3>Volgende activiteit</h3>
+    <p class="big">📅 31 januari</p>
+    <p class="muted">
+      Je kan stemmen tot <strong>15 januari</strong>.
+    </p>
+    <div class="deadline-info">
+      ⏳ Stemmen sluit over <span id="daysLeft">—</span> dagen
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Live stemmen</h3>
+    <div id="votesOverview" class="votes-overview"></div>
+  </section>
 </section>
 
-    <section class="card">
-  <h3>Live stemmen</h3>
-  <div id="votesOverview" class="votes-overview">
-    <p class="muted">Stemmen worden geladen…</p>
-  </div>
-</section>
-
-<section class="card highlight">
+<section class="card highlight winner-card">
   <h3>Huidige winnaar</h3>
   <p id="winnerName" class="big">—</p>
   <p id="winnerVotes" class="muted">Nog geen stemmen</p>
 </section>
 
 
-    <a href="vote.html" class="primary full">
-  Naar stemmen
-</a>
+      <a href="vote.html" class="primary full glow">
+        Naar stemmen
+      </a>
 
-
-  </div>
+    </div>
+  </main>
 
   <script type="module" src="dashboard.js"></script>
-
 </body>
 </html>
