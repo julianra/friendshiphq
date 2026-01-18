@@ -23,23 +23,69 @@
       </button>
     </header>
 
-    <!-- CHAT -->
-    <section class="card" style="height: 60vh; overflow-y: auto;" id="messages"></section>
+   <!-- CONTENT -->
+<section style="display:grid; grid-template-columns: 2fr 1fr; gap:1rem;">
 
-    <!-- INPUT -->
-    <section class="card">
-      <form id="chatForm" style="display:flex; gap:0.6rem;">
-        <input
-          id="messageInput"
-          type="text"
-          placeholder="Typ je bericht…"
-          autocomplete="off"
-          required
-          style="flex:1;"
-        />
-        <button type="submit" class="primary">Verstuur</button>
-      </form>
-    </section>
+  <!-- CHAT -->
+<!-- CHAT -->
+<section class="card" style="display:flex; flex-direction:column; height:60vh;">
+
+  <!-- Berichten -->
+  <div id="messages" style="flex:1; overflow-y:auto;"></div>
+
+  <!-- Chat input -->
+  <form id="chatForm" style="display:flex; gap:0.6rem; margin-top:0.6rem;">
+    <input
+      id="messageInput"
+      type="text"
+      placeholder="Typ je bericht…"
+      autocomplete="off"
+      required
+      style="flex:1;"
+    />
+    <button type="submit" class="primary">Verstuur</button>
+  </form>
+
+</section>
+
+  <!-- SIDEBAR -->
+  <section class="card">
+
+    <h3 id="activityName">Activiteit</h3>
+
+    <!-- DEELNEMERS -->
+    <div class="field">
+      <span>Wie komt?</span>
+      <div id="participantsList" class="muted">—</div>
+    </div>
+
+    <!-- KOM IK -->
+    <label style="margin-top:0.6rem; display:flex; gap:0.5rem; align-items:center;">
+      <input type="checkbox" id="comingCheckbox" />
+      Ik kom naar deze activiteit
+    </label>
+
+    <hr style="opacity:0.2; margin:0.8rem 0;" />
+
+    <!-- PLANNING -->
+    <div class="field">
+      <span>Locatie</span>
+      <input id="locationInput" placeholder="bv. Bowling Mechelen" />
+    </div>
+
+    <div class="field">
+      <span>Startuur</span>
+      <input id="timeInput" type="time" />
+    </div>
+
+    <button id="savePlanBtn" class="secondary full">
+      Planning opslaan
+    </button>
+
+  </section>
+
+</section>
+
 
   </div>
 </main>
