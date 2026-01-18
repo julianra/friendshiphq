@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friendship HQ – Chat</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="page">
+  <div class="dashboard">
+
+    <!-- HEADER -->
+    <header class="dashboard-header">
+      <div>
+        <h2 id="chatTitle">Groepschat</h2>
+        <p class="muted">Activiteit</p>
+      </div>
+
+      <button id="backBtn" class="secondary">
+        ← Terug
+      </button>
+    </header>
+
+    <!-- CHAT -->
+    <section class="card" style="height: 60vh; overflow-y: auto;" id="messages"></section>
+
+    <!-- INPUT -->
+    <section class="card">
+      <form id="chatForm" style="display:flex; gap:0.6rem;">
+        <input
+          id="messageInput"
+          type="text"
+          placeholder="Typ je bericht…"
+          autocomplete="off"
+          required
+          style="flex:1;"
+        />
+        <button type="submit" class="primary">Verstuur</button>
+      </form>
+    </section>
+
+  </div>
+</main>
+
+<script type="module" src="chat.js"></script>
+</body>
+</html>

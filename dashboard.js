@@ -3,19 +3,8 @@
 // ======================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-
-
-import {
-  getDatabase,
-  ref,
-  onValue,
-  get
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
 
 // ------------------------------------------------------
 // Firebase config
@@ -35,7 +24,16 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 // ------------------------------------------------------
-// Auth check + logout
+// Helpers
+// ------------------------------------------------------
+function isVotingClosed() {
+  const now = new Date();
+  const deadline = new Date(now.getFullYear(), 0, 15, 23, 59, 59);
+  return now > deadline;
+}
+
+// ------------------------------------------------------
+// Auth
 // ------------------------------------------------------
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -43,35 +41,19 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  const userRef = ref(db, `users/${user.uid}`);
-  const snapshot = await get(userRef);
-
-  // -------------------------------
-  // ❌ PROFIEL ONVOLLEDIG → NAAR SETTINGS
-  // -------------------------------
+  const snapshot = await get(ref(db, `users/${user.uid}`));
   if (!snapshot.exists()) {
     window.location.href = "settings.html";
     return;
   }
 
   const data = snapshot.val();
-
-  const hasFirstName = data.firstName && data.firstName.trim() !== "";
-  const hasLastName = data.lastName && data.lastName.trim() !== "";
-  const hasZipcode = data.zipcode && data.zipcode.trim() !== "";
-
-  if (!hasFirstName || !hasLastName || !hasZipcode) {
+  if (!data.firstName || !data.lastName || !data.zipcode) {
     window.location.href = "settings.html";
     return;
   }
 
-  // -------------------------------
-  // ✅ PROFIEL OK → DASHBOARD TOEGESTAAN
-  // -------------------------------
-  const welcome = document.getElementById("welcomeText");
-  if (welcome) {
-    welcome.textContent = `Welkom, ${data.firstName}`;
-  }
+  document.getElementById("welcomeText").textContent = `Welkom, ${data.firstName}`;
 });
 
 document.getElementById("logoutBtn").onclick = async () => {
@@ -80,95 +62,72 @@ document.getElementById("logoutBtn").onclick = async () => {
 };
 
 // ------------------------------------------------------
-// Realtime stemmen
+// UI refs
 // ------------------------------------------------------
 const overviewDiv = document.getElementById("votesOverview");
 const winnerName = document.getElementById("winnerName");
 const winnerVotes = document.getElementById("winnerVotes");
+const chatBtn = document.getElementById("chatBtn");
+const voteBtn = document.getElementById("voteBtn");
 
-const activitiesRef = ref(db, "activities");
+const statusText = document.getElementById("statusText");
+const statusSub = document.getElementById("statusSub");
 
-onValue(activitiesRef, (snapshot) => {
+// ------------------------------------------------------
+// Realtime stemmen
+// ------------------------------------------------------
+onValue(ref(db, "activities"), (snapshot) => {
   overviewDiv.innerHTML = "";
 
-  const data = snapshot.val();
-  if (!data) {
-    overviewDiv.innerHTML = "<p class='muted'>Nog geen activiteiten</p>";
-    winnerName.textContent = "—";
-    winnerVotes.textContent = "Nog geen stemmen";
-    return;
-  }
+  if (!snapshot.exists()) return;
 
-  // Zet data om naar array
-  const activities = Object.values(data).map(activity => ({
-    name: activity.name,
-    votes: activity.votes || 0
+  const activities = Object.values(snapshot.val()).map(a => ({
+    name: a.name,
+    votes: a.votes || 0
   }));
 
-  // Sorteer op stemmen (hoog → laag)
   activities.sort((a, b) => b.votes - a.votes);
 
-  // -------------------------------
-  // 🔒 LIVE STEMMEN: MAX 4
-  // -------------------------------
-  const topFour = activities.slice(0, 4);
-
-  topFour.forEach((activity, index) => {
+  activities.slice(0, 4).forEach((a, i) => {
     const row = document.createElement("div");
-    row.className = "vote-row";
-
-    // Optioneel: highlight leider
-    if (index === 0) {
-      row.classList.add("leading-vote");
-    }
-
-    row.innerHTML = `
-      <span>${activity.name}</span>
-      <strong>${activity.votes}</strong>
-    `;
+    row.className = "vote-row" + (i === 0 ? " leading-vote" : "");
+    row.innerHTML = `<span>${a.name}</span><strong>${a.votes}</strong>`;
     overviewDiv.appendChild(row);
   });
 
-  // -------------------------------
-  // 🏆 WINNAAR
-  // -------------------------------
   const winner = activities[0];
-  if (winner) {
-    winnerName.textContent = winner.name;
-    winnerVotes.textContent = `${winner.votes} stemmen`;
-  } else {
-    winnerName.textContent = "—";
-    winnerVotes.textContent = "Nog geen stemmen";
+  if (!winner) return;
+
+  winnerName.textContent = winner.name;
+  winnerVotes.textContent = `${winner.votes} stemmen`;
+
+  if (isVotingClosed()) {
+    statusText.textContent = "Stemronde gesloten";
+    statusSub.textContent = "De activiteit ligt vast. Ga naar de groepschat.";
+
+    voteBtn.classList.add("hidden");
+    chatBtn.classList.remove("hidden");
+
+    chatBtn.href = `chat.html?activity=${encodeURIComponent(winner.name)}`;
   }
 });
 
+// ------------------------------------------------------
+// Countdown
+// ------------------------------------------------------
 const daysLeftEl = document.getElementById("daysLeft");
-
 if (daysLeftEl) {
   const now = new Date();
+  let deadline = new Date(now.getFullYear(), 0, 15);
+  if (now > deadline) deadline = new Date(now.getFullYear() + 1, 0, 15);
 
-  const currentYear = now.getFullYear();
-
-  // Deadline: 15 januari
-  let deadline = new Date(currentYear, 0, 15);
-
-  // Als we NA 15 januari zitten, pak volgend jaar
-  if (now > deadline) {
-    deadline = new Date(currentYear + 1, 0, 15);
-  }
-
-  const diffMs = deadline - now;
-  const daysLeft = Math.max(
-    0,
-    Math.ceil(diffMs / (1000 * 60 * 60 * 24))
-  );
-
-  daysLeftEl.textContent = daysLeft;
+  const days = Math.max(0, Math.ceil((deadline - now) / 86400000));
+  daysLeftEl.textContent = days;
 }
-const settingsBtn = document.getElementById("settingsBtn");
 
-if (settingsBtn) {
-  settingsBtn.onclick = () => {
-    window.location.href = "settings.html";
-  };
-}
+// ------------------------------------------------------
+// Settings
+// ------------------------------------------------------
+document.getElementById("settingsBtn").onclick = () => {
+  window.location.href = "settings.html";
+};
